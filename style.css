@@ -48,3 +48,20 @@ input::placeholder {
 h3 {
     color: red;
 }
+/* Responsive Design */
+@media (min-width: 768px) {
+    .buttons {
+        margin-left: 1cm;
+    }
+}
+
+@media (max-width: 768px) {
+    .buttons {
+        width: 80%;
+        margin: 5px auto;
+    }
+
+    input {
+        width: 90%;
+    }
+}
