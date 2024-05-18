@@ -1,0 +1,50 @@
+body {
+    background-color:antiquewhite;
+}
+
+.buttons {
+    padding: 2px;
+    text-align: center;
+    border-radius: 10px;
+    color: aliceblue;
+    background-color: rgb(12, 12, 12);
+    height: 50px;
+    width: auto;
+    margin-left: 2cm;
+    transition-duration: 0.4s;
+    font-family: cursive;
+    font-weight: 400;
+}
+
+.buttons:hover {
+    background-color: rgb(248, 243, 243);
+    color: rgb(19, 18, 18);
+}
+
+.headings {
+    text-align: center;
+}
+
+input {
+    width: 40%;
+    height: 40px;
+    border-color: green;
+}
+
+input::placeholder {
+    text-align: center;
+}
+
+#ip {
+    border-width: 2px;
+    background-color: rgb(239, 239, 239);
+}
+
+.headings {
+    font-family: cursive;
+
+}
+
+h3 {
+    color: red;
+}

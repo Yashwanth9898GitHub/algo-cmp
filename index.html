@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style.css">
+  <title>SORT IT!!!</title>
+  <script src="./code.js"></script>
+</head>
+
+<body>
+  <div class="headings">
+    <h1>DATA ANALYSIS</h1>
+
+    <img src="img.png" height="200px" width="auto">
+    <h2>Enter the data and analyse or sort it in seconds!!!</h2>
+    <div>
+      <h2>Enter the data in the below text box </h2>
+      <h3>
+        <marquee behaviour="" direction="right">Only homogenous data is allowed</marquee>
+      </h3>
+      <input type="text" id="ip" name="array[]" placeholder="enter the data here separated by comma(,)"> <br>
+      <br>
+      <button class="buttons" onclick="mergesort()">Mergesort</button>
+
+      <button class="buttons" onclick="quicksort()">Quicksort</button>
+      <button class="buttons" onclick="bubblesort()">Bubblesort</button>
+      <button class="buttons" onclick="search()">search</button>
+      <button class="buttons" onclick="minmax()">maxmin</button>
+      <button class="buttons" onclick="analyze()">Analyze</button><br>
+      <br>
+      <h1 id="output">Output</h1>
+    </div>
+
+
+</body>
+
+</html>
