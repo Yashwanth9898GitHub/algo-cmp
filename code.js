@@ -1,208 +1,632 @@
+/**
+ * Algorithm Comparison Tool
+ * Comprehensive sorting and searching algorithms with time/space complexity analysis
+ * Last Updated: 2026
+ */
+
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+
+/**
+ * Collects and validates input data
+ * @returns {number[]} Array of numbers from user input
+ */
 function collectdata() {
-    var namearr;
-    var input = document.getElementById('ip').value;
-    namearr = input.split(",");
-    var numarr = [];
-    namearr.forEach(str => {
-        numarr.push(Number(str));
-    });
+    const input = document.getElementById('ip').value.trim();
+    
+    if (!input) {
+        showError('Please enter data separated by commas');
+        return [];
+    }
+    
+    const namearr = input.split(",");
+    const numarr = [];
+    
+    for (let str of namearr) {
+        const num = Number(str.trim());
+        if (isNaN(num)) {
+            showError(`Invalid number: "${str.trim()}"`);
+            return [];
+        }
+        numarr.push(num);
+    }
+    
     return numarr;
 }
-/*********************************
- merge algotithm from google{DAA}
- ********************************/
-function merge(arr, l, m, r) {
-    var n1 = m - l + 1;
-    var n2 = r - m;
-    var L = new Array(n1);
-    var R = new Array(n2);
 
-    for (var i = 0; i < n1; i++)
+/**
+ * Displays error messages to user
+ * @param {string} message - Error message to display
+ */
+function showError(message) {
+    document.getElementById('output').innerHTML = `<span style="color: red; font-weight: bold;">❌ Error: ${message}</span>`;
+}
+
+/**
+ * Displays result with complexity information
+ * @param {string} title - Algorithm name
+ * @param {string} result - Result content
+ * @param {number} executionTime - Execution time in milliseconds
+ * @param {string} timeComplexity - Time complexity notation
+ * @param {string} spaceComplexity - Space complexity notation
+ * @param {string} notes - Additional notes about the algorithm
+ */
+function displayResult(title, result, executionTime, timeComplexity, spaceComplexity, notes = '') {
+    const complexityInfo = `
+        <div style="background-color: #f0f0f0; padding: 15px; border-radius: 8px; margin-top: 10px; font-family: monospace;">
+            <strong style="font-size: 18px; color: #333;">⏱️ ${title}</strong><br>
+            <span style="color: #28a745;"><strong>Result:</strong> ${result}</span><br>
+            <span style="color: #007bff;"><strong>Execution Time:</strong> ${executionTime.toFixed(4)} ms</span><br>
+            <span style="color: #ff6b6b;"><strong>Time Complexity:</strong> ${timeComplexity}</span><br>
+            <span style="color: #ff6b6b;"><strong>Space Complexity:</strong> ${spaceComplexity}</span>
+            ${notes ? `<br><span style="color: #6c757d;"><strong>📌 Note:</strong> ${notes}</span>` : ''}
+        </div>
+    `;
+    document.getElementById('output').innerHTML = complexityInfo;
+}
+
+/**
+ * Creates a copy of array to avoid mutation in original
+ * @param {number[]} arr - Original array
+ * @returns {number[]} Copied array
+ */
+function copyArray(arr) {
+    return [...arr];
+}
+
+// ============================================
+// MERGE SORT
+// ============================================
+
+/**
+ * Merges two sorted subarrays
+ * Time Complexity: O(n)
+ * Space Complexity: O(n)
+ * @param {number[]} arr - Main array
+ * @param {number} l - Left index
+ * @param {number} m - Middle index
+ * @param {number} r - Right index
+ */
+function merge(arr, l, m, r) {
+    const n1 = m - l + 1;
+    const n2 = r - m;
+    const L = new Array(n1);
+    const R = new Array(n2);
+
+    for (let i = 0; i < n1; i++)
         L[i] = arr[l + i];
-    for (var j = 0; j < n2; j++)
+    for (let j = 0; j < n2; j++)
         R[j] = arr[m + 1 + j];
 
-    var i = 0;
-    var j = 0;
-    var k = l;
+    let i = 0, j = 0, k = l;
+    
     while (i < n1 && j < n2) {
         if (L[i] <= R[j]) {
             arr[k] = L[i];
             i++;
-        }
-        else {
+        } else {
             arr[k] = R[j];
             j++;
         }
         k++;
     }
+
     while (i < n1) {
         arr[k] = L[i];
         i++;
         k++;
     }
+
     while (j < n2) {
         arr[k] = R[j];
         j++;
         k++;
     }
+
     return arr;
 }
 
+/**
+ * Merge Sort algorithm - Divide and Conquer
+ * Time Complexity: O(n log n) - All cases
+ * Space Complexity: O(n) - Requires auxiliary arrays
+ * @param {number[]} arr - Array to sort
+ * @param {number} l - Left index
+ * @param {number} r - Right index
+ */
 function mergeSortt(arr, l, r) {
-    if (l >= r) {
-        return;
+    if (l < r) {
+        const m = l + Math.floor((r - l) / 2);
+        mergeSortt(arr, l, m);
+        mergeSortt(arr, m + 1, r);
+        merge(arr, l, m, r);
     }
-    var m = l + parseInt((r - l) / 2);
-    mergeSortt(arr, l, m);
-    mergeSortt(arr, m + 1, r);
-    return merge(arr, l, m, r);
+    return arr;
 }
 
-
-/*********************************
- merge code execution time calculation 
-********************************/
+/**
+ * Merge Sort Wrapper with Performance Analysis
+ * Best For: Large datasets requiring guaranteed O(n log n) performance
+ * Stable: Yes
+ */
 function mergesort() {
-    var startTime = performance.now();
-    var inputArr = collectdata();
-    var ans = mergeSortt(inputArr, 0, inputArr.length);
-    var endTime = performance.now();
-    var executionTime = endTime - startTime;
-    document.getElementById('output').innerHTML = ans + "<br>Execution time: " + executionTime + " milliseconds";
+    const inputArr = collectdata();
+    if (inputArr.length === 0) return;
+    
+    const startTime = performance.now();
+    const arr = copyArray(inputArr);
+    const ans = mergeSortt(arr, 0, arr.length - 1);
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    
+    displayResult(
+        'Merge Sort',
+        `[${ans.join(', ')}]`,
+        executionTime,
+        'O(n log n)',
+        'O(n)',
+        'Divide & Conquer approach. Excellent for linked lists and external sorting.'
+    );
 }
 
-/*********************************
- quick/partition algotithm from google{DAA}
- ********************************/
+// ============================================
+// QUICK SORT
+// ============================================
 
+/**
+ * Swaps two elements in array
+ * @param {number[]} arr - Array
+ * @param {number} i - First index
+ * @param {number} j - Second index
+ */
 function swap(arr, i, j) {
-    let temp = arr[i];
+    const temp = arr[i];
     arr[i] = arr[j];
     arr[j] = temp;
-    return arr;
 }
 
+/**
+ * Partitions array for Quick Sort
+ * Time Complexity: O(n)
+ * @param {number[]} arr - Array
+ * @param {number} low - Low index
+ * @param {number} high - High index
+ */
 function partition(arr, low, high) {
-    let pivot = arr[high];
-    let i = (low - 1);
-    for (let j = low; j <= high - 1; j++) {
+    const pivot = arr[high];
+    let i = low - 1;
+    
+    for (let j = low; j < high; j++) {
         if (arr[j] < pivot) {
             i++;
             swap(arr, i, j);
         }
     }
     swap(arr, i + 1, high);
-    return (i + 1);
+    return i + 1;
 }
 
+/**
+ * Quick Sort algorithm - Divide and Conquer
+ * Time Complexity: O(n log n) average, O(n²) worst case
+ * Space Complexity: O(log n) - Recursion stack
+ * @param {number[]} arr - Array to sort
+ * @param {number} low - Low index
+ * @param {number} high - High index
+ */
 function quickSortt(arr, low, high) {
     if (low < high) {
-        let pi = partition(arr, low, high);
+        const pi = partition(arr, low, high);
         quickSortt(arr, low, pi - 1);
         quickSortt(arr, pi + 1, high);
     }
     return arr;
 }
 
+/**
+ * Quick Sort Wrapper with Performance Analysis
+ * Best For: General purpose sorting with average O(n log n) performance
+ * Stable: No (standard implementation)
+ */
 function quicksort() {
-    var startTime = performance.now();
-    var inputArr1 = collectdata();
-    var ans1 = quickSortt(inputArr1, 0, inputArr1.length);
-    var endTime = performance.now();
-    var executionTime = endTime - startTime;
-    document.getElementById('output').innerHTML = ans1 + "<br>Execution time: " + executionTime + " milliseconds";
+    const inputArr = collectdata();
+    if (inputArr.length === 0) return;
+    
+    const startTime = performance.now();
+    const arr = copyArray(inputArr);
+    const ans = quickSortt(arr, 0, arr.length - 1);
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    
+    displayResult(
+        'Quick Sort',
+        `[${ans.join(', ')}]`,
+        executionTime,
+        'O(n log n) avg, O(n²) worst',
+        'O(log n)',
+        'In-place sorting. Faster in practice than Merge Sort. Beware of already-sorted data.'
+    );
 }
 
-/*********************************
- bubble algotithm from google{DAA}
- ********************************/
+// ============================================
+// BUBBLE SORT
+// ============================================
+
+/**
+ * Bubble Sort algorithm - Simple Comparison Sort
+ * Time Complexity: O(n²) - All cases
+ * Space Complexity: O(1) - In-place
+ * Optimized: Early termination if array becomes sorted
+ * @param {number[]} arr - Array to sort
+ */
 function bubbleSortt(arr) {
-    for (var i = 0; i < arr.length; i++) {
-        for (var j = 0; j < (arr.length - i - 1); j++) {
+    const n = arr.length;
+    
+    for (let i = 0; i < n - 1; i++) {
+        let swapped = false;
+        
+        for (let j = 0; j < n - i - 1; j++) {
             if (arr[j] > arr[j + 1]) {
-                var temp = arr[j]
-                arr[j] = arr[j + 1]
-                arr[j + 1] = temp
+                swap(arr, j, j + 1);
+                swapped = true;
             }
         }
+        
+        // Optimization: Stop if no swaps occurred
+        if (!swapped) break;
     }
+    
     return arr;
 }
 
+/**
+ * Bubble Sort Wrapper with Performance Analysis
+ * Best For: Educational purposes, nearly sorted small datasets
+ * Stable: Yes
+ */
 function bubblesort() {
-    var startTime = performance.now();
-    var inputArr2 = collectdata();
-    var ans2 = bubbleSortt(inputArr2);
-    var endTime = performance.now();
-    var executionTime = endTime - startTime;
-    document.getElementById('output').innerHTML = ans2 + "<br>Execution time: " + executionTime + " milliseconds";
+    const inputArr = collectdata();
+    if (inputArr.length === 0) return;
+    
+    const startTime = performance.now();
+    const arr = copyArray(inputArr);
+    const ans = bubbleSortt(arr);
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    
+    displayResult(
+        'Bubble Sort',
+        `[${ans.join(', ')}]`,
+        executionTime,
+        'O(n²)',
+        'O(1)',
+        'Simple but inefficient for large datasets. Uses swapping technique.'
+    );
 }
 
-/*****************************************************
- calculation of number of elements in a  given dataset
- ****************************************************/
-function analyze() {
-    var startTime = performance.now();
-    var inputArr3 = collectdata();
-    var ans3 = inputArr3.length;
-    var endTime = performance.now();
-    var executionTime = endTime - startTime;
-    document.getElementById('output').innerHTML = "Number of words=" + ans3 + "<br>Execution time: " + executionTime + " milliseconds";
+// ============================================
+// HEAP SORT (NEW)
+// ============================================
+
+/**
+ * Heapifies a subtree rooted at index i
+ * Time Complexity: O(log n)
+ * @param {number[]} arr - Array
+ * @param {number} n - Size of heap
+ * @param {number} i - Index to heapify
+ */
+function heapify(arr, n, i) {
+    let largest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+
+    if (largest !== i) {
+        swap(arr, i, largest);
+        heapify(arr, n, largest);
+    }
 }
 
-/*********************************
- search algotithm from google{DAA}
- ********************************/
-function searchh(arr, n, x) {
-    let i;
-    for (i = 0; i < n; i++)
-        if (arr[i] == x)
-            return "found";
+/**
+ * Heap Sort algorithm - Selection Sort variant
+ * Time Complexity: O(n log n) - All cases
+ * Space Complexity: O(1) - In-place
+ * @param {number[]} arr - Array to sort
+ */
+function heapSortt(arr) {
+    const n = arr.length;
 
-    return "not found";
+    // Build max heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--)
+        heapify(arr, n, i);
+
+    // Extract elements one by one
+    for (let i = n - 1; i > 0; i--) {
+        swap(arr, 0, i);
+        heapify(arr, i, 0);
+    }
+
+    return arr;
 }
 
+/**
+ * Heap Sort Wrapper with Performance Analysis
+ * Best For: Guaranteed O(n log n) with O(1) space
+ * Stable: No
+ */
+function heapsort() {
+    const inputArr = collectdata();
+    if (inputArr.length === 0) return;
+    
+    const startTime = performance.now();
+    const arr = copyArray(inputArr);
+    const ans = heapSortt(arr);
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    
+    displayResult(
+        'Heap Sort',
+        `[${ans.join(', ')}]`,
+        executionTime,
+        'O(n log n)',
+        'O(1)',
+        'In-place sorting using heap data structure. Guaranteed O(n log n) performance.'
+    );
+}
+
+// ============================================
+// LINEAR SEARCH
+// ============================================
+
+/**
+ * Linear Search algorithm
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ * @param {number[]} arr - Array to search
+ * @param {number} target - Element to find
+ * @returns {number} Index if found, -1 otherwise
+ */
+function linearSearch(arr, target) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === target)
+            return i;
+    }
+    return -1;
+}
+
+/**
+ * Linear Search Wrapper with Performance Analysis
+ * Best For: Small datasets or unsorted data
+ */
 function search() {
-    var startTime = performance.now();
-    var inputArr4 = collectdata();
-    var ans4 = searchh(inputArr4, inputArr4.length, 5);
-    var endTime = performance.now();
-    var executionTime = endTime - startTime;
-    document.getElementById('output').innerHTML = ans4 + "<br>Execution time: " + executionTime + " milliseconds";
+    const inputArr = collectdata();
+    if (inputArr.length === 0) return;
+    
+    const searchValue = prompt('Enter the number to search:');
+    if (searchValue === null) return;
+    
+    const target = Number(searchValue);
+    if (isNaN(target)) {
+        showError('Please enter a valid number');
+        return;
+    }
+    
+    const startTime = performance.now();
+    const index = linearSearch(inputArr, target);
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    
+    const result = index !== -1 ? `Found at index ${index}` : 'Not found';
+    
+    displayResult(
+        'Linear Search',
+        result,
+        executionTime,
+        'O(n)',
+        'O(1)',
+        'Scans array sequentially. Works on unsorted data.'
+    );
 }
 
-function Min(arr) {
-    var len = arr.length, min = Infinity;
-    while (len--) {
-        if (arr[len] < min) {
-            min = arr[len];
-        }
+// ============================================
+// BINARY SEARCH (NEW)
+// ============================================
+
+/**
+ * Binary Search algorithm (requires sorted array)
+ * Time Complexity: O(log n)
+ * Space Complexity: O(1)
+ * @param {number[]} arr - Sorted array to search
+ * @param {number} target - Element to find
+ * @returns {number} Index if found, -1 otherwise
+ */
+function binarySearch(arr, target) {
+    let left = 0, right = arr.length - 1;
+
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target)
+            return mid;
+        else if (arr[mid] < target)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+
+    return -1;
+}
+
+/**
+ * Binary Search Wrapper with Performance Analysis
+ * Best For: Large sorted datasets
+ */
+function binarysearch() {
+    const inputArr = collectdata();
+    if (inputArr.length === 0) return;
+    
+    const searchValue = prompt('Enter the number to search:');
+    if (searchValue === null) return;
+    
+    const target = Number(searchValue);
+    if (isNaN(target)) {
+        showError('Please enter a valid number');
+        return;
+    }
+    
+    // Sort array for binary search
+    const sortedArr = copyArray(inputArr).sort((a, b) => a - b);
+    
+    const startTime = performance.now();
+    const index = binarySearch(sortedArr, target);
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    
+    const result = index !== -1 ? `Found at sorted index ${index}` : 'Not found';
+    
+    displayResult(
+        'Binary Search',
+        result,
+        executionTime,
+        'O(log n)',
+        'O(1)',
+        'Requires sorted array. Exponentially faster than linear search for large datasets.'
+    );
+}
+
+// ============================================
+// MIN/MAX FINDING
+// ============================================
+
+/**
+ * Finds minimum element in array
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ * @param {number[]} arr - Array
+ * @returns {number} Minimum value
+ */
+function findMin(arr) {
+    if (arr.length === 0) return null;
+    let min = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < min) min = arr[i];
     }
     return min;
-};
-
-function Max(arr) {
-    var len = arr.length, max = -Infinity;
-    while (len--) {
-        if (arr[len] > max) {
-            max = arr[len];
-        }
-    }
-    return max;
-};
-
-function minmax() {
-    var startTime = performance.now();
-    var inputArr5 = collectdata();
-    var ans5 = Max(inputArr5);
-    var ans6 = Min(inputArr5);
-    var endTime = performance.now();
-    var executionTime = endTime - startTime;
-    var s1 = "Maximum element=" + ans5 + " Minimum element=" + ans6;
-    document.getElementById('output').innerHTML = s1 + "<br>Execution time: " + executionTime + " milliseconds";
 }
 
+/**
+ * Finds maximum element in array
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ * @param {number[]} arr - Array
+ * @returns {number} Maximum value
+ */
+function findMax(arr) {
+    if (arr.length === 0) return null;
+    let max = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] > max) max = arr[i];
+    }
+    return max;
+}
+
+/**
+ * Finds both min and max in single pass
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ * @param {number[]} arr - Array
+ * @returns {Object} Object with min and max properties
+ */
+function findMinMax(arr) {
+    if (arr.length === 0) return { min: null, max: null };
+    
+    let min = arr[0], max = arr[0];
+    
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < min) min = arr[i];
+        if (arr[i] > max) max = arr[i];
+    }
+    
+    return { min, max };
+}
+
+/**
+ * Min/Max Finding Wrapper with Performance Analysis
+ */
+function minmax() {
+    const inputArr = collectdata();
+    if (inputArr.length === 0) return;
+    
+    const startTime = performance.now();
+    const { min, max } = findMinMax(inputArr);
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    
+    const result = `Max: ${max}, Min: ${min}`;
+    
+    displayResult(
+        'Min/Max Finding',
+        result,
+        executionTime,
+        'O(n)',
+        'O(1)',
+        'Single pass algorithm finds both extremes efficiently.'
+    );
+}
+
+// ============================================
+// DATASET ANALYSIS
+// ============================================
+
+/**
+ * Analyzes dataset properties
+ * Time Complexity: O(n)
+ * Space Complexity: O(1)
+ */
+function analyze() {
+    const inputArr = collectdata();
+    if (inputArr.length === 0) return;
+    
+    const startTime = performance.now();
+    
+    const count = inputArr.length;
+    const sum = inputArr.reduce((a, b) => a + b, 0);
+    const avg = sum / count;
+    const { min, max } = findMinMax(inputArr);
+    const range = max - min;
+    
+    const endTime = performance.now();
+    const executionTime = endTime - startTime;
+    
+    const result = `
+        Count: ${count} | Sum: ${sum} | Average: ${avg.toFixed(2)} | 
+        Min: ${min} | Max: ${max} | Range: ${range}
+    `;
+    
+    displayResult(
+        'Dataset Analysis',
+        result,
+        executionTime,
+        'O(n)',
+        'O(1)',
+        'Comprehensive statistics in single pass.'
+    );
+}
+
+// ============================================
+// UTILITY FUNCTION FOR VALIDATION
+// ============================================
+
+/**
+ * Validates if string contains special characters
+ * @param {string} str - String to validate
+ * @returns {boolean} True if special chars found
+ */
 function containsSpecialChars(str) {
     const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|.<>\/?~]/;
     return specialChars.test(str);
