@@ -6,34 +6,58 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./style.css">
-  <title>SORT IT!!!</title>
+  <title>Algorithm Comparison Tool</title>
   <script src="./code.js"></script>
 </head>
 
 <body>
   <div class="headings">
-    <h1>DATA ANALYSIS</h1>
+    <h1>🔍 Algorithm Comparison & Analysis Tool</h1>
+    <img src="img.png" height="200px" width="auto" alt="Algorithm visualization">
+    <h2>Compare Sorting, Searching Algorithms & Analyze Your Data</h2>
+    
+    <div class="input-section">
+      <h3>📊 Enter Your Data</h3>
+      <p style="color: #666; font-size: 14px;">Enter numbers separated by commas (e.g., 5,2,8,1,9)</p>
+      <input type="text" id="ip" name="array[]" placeholder="e.g., 64, 34, 25, 12, 22, 11, 90"> 
+      <br><br>
 
-    <img src="img.png" height="200px" width="auto">
-    <h2>Enter the data and analyse or sort it in seconds!!!</h2>
-    <div>
-      <h2>Enter the data in the below text box </h2>
-      <h3>
-        <marquee behaviour="" direction="right">Only homogenous data is allowed</marquee>
-      </h3>
-      <input type="text" id="ip" name="array[]" placeholder="enter the data here separated by comma(,)"> <br>
-      <br>
-      <button class="buttons" onclick="mergesort()">Mergesort</button>
+      <!-- Sorting Algorithms Section -->
+      <fieldset>
+        <legend><strong>🔄 Sorting Algorithms</strong></legend>
+        <div class="button-group">
+          <button class="buttons sort-btn" onclick="mergesort()" title="O(n log n) - Stable, Divide & Conquer">Merge Sort</button>
+          <button class="buttons sort-btn" onclick="quicksort()" title="O(n log n) avg - In-place, Fast">Quick Sort</button>
+          <button class="buttons sort-btn" onclick="bubblesort()" title="O(n²) - Simple, Educational">Bubble Sort</button>
+          <button class="buttons sort-btn" onclick="heapsort()" title="O(n log n) - In-place, Guaranteed">Heap Sort</button>
+        </div>
+      </fieldset>
 
-      <button class="buttons" onclick="quicksort()">Quicksort</button>
-      <button class="buttons" onclick="bubblesort()">Bubblesort</button>
-      <button class="buttons" onclick="search()">search</button>
-      <button class="buttons" onclick="minmax()">maxmin</button>
-      <button class="buttons" onclick="analyze()">Analyze</button><br>
+      <!-- Searching Algorithms Section -->
+      <fieldset>
+        <legend><strong>🔎 Searching Algorithms</strong></legend>
+        <div class="button-group">
+          <button class="buttons search-btn" onclick="search()" title="O(n) - Works on unsorted data">Linear Search</button>
+          <button class="buttons search-btn" onclick="binarysearch()" title="O(log n) - Requires sorted data">Binary Search</button>
+        </div>
+      </fieldset>
+
+      <!-- Analysis Section -->
+      <fieldset>
+        <legend><strong>📈 Data Analysis</strong></legend>
+        <div class="button-group">
+          <button class="buttons analysis-btn" onclick="minmax()" title="O(n) - Find min/max in single pass">Min/Max Finder</button>
+          <button class="buttons analysis-btn" onclick="analyze()" title="O(n) - Complete dataset statistics">Analyze Dataset</button>
+        </div>
+      </fieldset>
+
       <br>
-      <h1 id="output">Output</h1>
+      <div class="output-section">
+        <h2>📋 Output & Results</h2>
+        <div id="output" class="output-box">Results will appear here...</div>
+      </div>
     </div>
-
+  </div>
 
 </body>
 
